@@ -18,12 +18,19 @@ function Chat() {
     const [showDelete, setShowDelete] = useState(false);
     const photoURL = auth.currentUser.photoURL;
     const [dark, setDark] = useState(false);
+    const typingState = useSelector(state=>state.typing);
+    const [userType,setUserType] = useState(auth.currentUser.uid);
+    const userId = auth.currentUser.uid;
+
+    
+    
 
     const wholeBody = document.getElementsByTagName('body')[0]
  
     const dispatch = useDispatch();
     const showEmojis = useSelector(state=>state.emojiShown);
     const fileAttached  = useSelector(state=>state.fileAttached);
+    
  
   
     
@@ -39,6 +46,14 @@ function Chat() {
 
 
     }, [])
+
+    useEffect(() => {
+        db.collection('Typing').doc('JyLfD9uRoeMQK1RP1cN6').onSnapshot(snapshot => {
+            setUserType(snapshot.data().uid)
+            
+        })
+       
+       }, []);
 
     function emojiHandler(){
         if(showEmojis){
@@ -70,6 +85,8 @@ function Chat() {
         dark ? wholeBody.style.backgroundColor='white':wholeBody.style.backgroundColor='black';
 
     }
+
+    console.log(typingState)
 
     
     return (
@@ -103,7 +120,7 @@ function Chat() {
             </div>
             {fileAttached && <h2  style={{position:'fixed', bottom:'12vh',right:'4vh'}}>Attachment</h2>}
             
-            {/* {typingState && usertype===true && <p style={{position:'fixed', bottom:'10vh',right:'4vh'}}>typing...</p>} */}
+            {typingState && userType!==userId && <p style={{position:'fixed', bottom:'10vh',right:'4vh'}}>typing...</p>}
             
             <SendMessage scroll={scroll}  />
             <div ref={scroll} ></div>

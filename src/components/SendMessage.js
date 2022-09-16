@@ -14,13 +14,11 @@ import { useSelector,useDispatch } from 'react-redux';
 function SendMessage(props) {
    
     const [msg, setMsg] = useState('')
-   // const [showEmojis, setShowEmojis] = useState(false);
    const dispatch = useDispatch();
-   //const [typing, setTyping ] = useState();
-   //const[err, setErr] = useState('some')
-
-   const [files,setFiles] = useState(null)
-   
+   const [files,setFiles] = useState(null);
+   const showEmojis = useSelector(state=>state.emojiShown);
+   const userId = auth.currentUser.uid;
+   console.log(auth)
    useEffect(() => {
     db.collection('Typing').doc('JyLfD9uRoeMQK1RP1cN6').onSnapshot(snapshot => {
         dispatch(emojiActions.toggleTyping(snapshot.data().typingState))
@@ -28,14 +26,7 @@ function SendMessage(props) {
     })
    
    }, []);
-
-   useEffect(()=>{
-    console.log(files)
-   },[files])
-
-
-
-   const showEmojis = useSelector(state=>state.emojiShown);
+   
    
     
 
@@ -85,11 +76,9 @@ function SendMessage(props) {
         
             setMsg(e.target.value)
          
+
         
-        
-     
-        
-        dispatch(emojiActions.toggleTyping())
+        await  db.collection('Typing').doc('JyLfD9uRoeMQK1RP1cN6').update({uid:userId})
         const response = await db.collection('Typing').doc('JyLfD9uRoeMQK1RP1cN6').get()
         const data = response.data().typingState
         dispatch(emojiActions.toggleTyping(data))
@@ -101,7 +90,7 @@ function SendMessage(props) {
             db.collection('Typing').doc('JyLfD9uRoeMQK1RP1cN6').update({typingState:true})
         }
 
-        dispatch(emojiActions.userTyping(false))   
+        dispatch(emojiActions.toggleTyping(false))   
 }
 
 function fileHandler(e){

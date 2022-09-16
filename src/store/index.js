@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {emojiShown:false, typing:false, usertypingState:true,backDrop:false,fileAttached:false}
+const initialState = {emojiShown:false, typing:false,backDrop:false,fileAttached:false}
 
 const emojiSlice = createSlice({
     name:'emoji',
@@ -14,9 +14,6 @@ const emojiSlice = createSlice({
         toggleTyping(state,action){
             state.typing = action.payload
 
-        },
-        userTyping(state,action){
-            state.usertypingState = action.payload
         },
         backDropToggle(state,action){
             state.backDrop = action.payload
