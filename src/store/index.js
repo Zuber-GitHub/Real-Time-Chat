@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {emojiShown:false, typing:false,backDrop:false,fileAttached:false}
+const initialState = {emojiShown:false, typing:false,backDrop:false,fileAttached:false, cameraStatus:false, camImage:null}
 
 const emojiSlice = createSlice({
     name:'emoji',
@@ -20,6 +20,12 @@ const emojiSlice = createSlice({
         },
         toggleFileAttachment(state,action){
             state.fileAttached = action.payload
+        },
+        toggleCamera(state,action){
+            state.cameraStatus = !state.cameraStatus
+        },
+        toggleCamImage(state,action){
+            state.camImage = action.payload
         }
 
 

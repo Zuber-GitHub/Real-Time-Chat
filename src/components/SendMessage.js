@@ -8,6 +8,7 @@ import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data';
 import { useEffect } from 'react';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import {storage} from '../firebase';
 import { useSelector,useDispatch } from 'react-redux';
 
@@ -18,7 +19,8 @@ function SendMessage(props) {
    const [files,setFiles] = useState(null);
    const showEmojis = useSelector(state=>state.emojiShown);
    const userId = auth.currentUser.uid;
-   console.log(auth)
+   const camImage = useSelector(state=>state.camImage);
+   
    useEffect(() => {
     db.collection('Typing').doc('JyLfD9uRoeMQK1RP1cN6').onSnapshot(snapshot => {
         dispatch(emojiActions.toggleTyping(snapshot.data().typingState))
@@ -42,7 +44,8 @@ function SendMessage(props) {
                 uid,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 url:null,
-                fileType:null
+                fileType:null,
+                
             })
             const prevRequest =await response.get()
             const prevData = prevRequest.data()
@@ -56,12 +59,19 @@ function SendMessage(props) {
             
 
         }
+
+        if(!!camImage){
+            uploadImage(camImage)
+        }
+
+
+
        
 
 
       
         props.scroll.current.scrollIntoView({ behavior: 'smooth' })
-        dispatch(emojiActions.userTyping(true))
+       // dispatch(emojiActions.userTyping(true))
 
     }
 
@@ -128,7 +138,8 @@ function uploadFiles(file){
         uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         url:fileUrl,
-        fileType:file.type
+        fileType:file.type,
+        
     })
     const prevRequest =await response.get()
     dispatch(emojiActions.backDropToggle(false))
@@ -142,6 +153,23 @@ function uploadFiles(file){
   }
 );
 
+
+}
+
+async function uploadImage(image){
+    const { uid} = auth.currentUser
+    const response = await db.collection('messages').add({
+        text: '',
+  
+        uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        url:image,
+        fileType:'camImage',
+
+        
+    })
+    dispatch(emojiActions.toggleCamImage(null))
+    dispatch(emojiActions.backDropToggle(false))
 
 }
 
@@ -159,9 +187,11 @@ function uploadFiles(file){
                 <img alt='emoji' src={emoji} style={{height:'30px', width:'30px', marginTop:'10px',cursor:'pointer'}} onClick={emojiHandler}/>
                 
                     <label htmlFor='files'>
-                        <AttachFileIcon style={{margin:'15px', cursor:'pointer'}} />
+                        <AttachFileIcon style={{margin:'10px', cursor:'pointer'}} />
                     </label>
+                    
                     <input id='files' type='file' style={{display:'none'}} accept='application/pdf,audio/*,video/*,image/*' onChange={fileHandler}/>
+                    <CameraAltIcon style={{marginTop:'15px', marginRight:'15px'}} onClick={()=>{dispatch(emojiActions.toggleCamera(true))}}/>
                     <input className='sendInput' style={{ width: '78%', fontSize: '15px', fontWeight: '550', marginLeft: '5px', marginBottom: '-3px' }} placeholder='Message...' type="text" value={msg} onChange={msgHandler} />
                     <button style={{ width: '18%', fontSize: '15px', fontWeight: '550', margin: '4px 5% -13px 5%', maxWidth: '200px'}} type="submit">Send</button>
                 </div>

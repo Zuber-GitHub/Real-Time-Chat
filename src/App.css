@@ -136,6 +136,14 @@ p {
   
 }
 
+.my-modal {
+  display: none;
+}
+
+.my-modal--show {
+  display: block;
+}
+
 
 
 
@@ -227,6 +235,8 @@ p {
     margin-top: -7px;
   }
 }
+
+
 
 
 

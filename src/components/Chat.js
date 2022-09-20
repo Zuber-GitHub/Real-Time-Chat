@@ -99,6 +99,7 @@ function Chat() {
                 {messages.map(({ createdAt,text, uid,id,url,fileType}) => (
                     <div>
                         {!!fileType?.includes('image') && <a href={url} target='blank'><img alt='imag' className={`${uid === auth.currentUser.uid ? 'imgMsg_sent' : 'img_Msgreceived'}`} src={url} /></a>}
+                        {!!fileType?.includes('camImage') && <a href={url} target='blank'><img alt='imag' className={`${uid === auth.currentUser.uid ? 'imgMsg_sent' : 'img_Msgreceived'}`} src={url} /></a>}
                        
                       {  !!text && <div onClick={()=>msgClickHandler(id)} key={Math.random().toString()} className={`msg ${uid === auth.currentUser.uid ? 'sent' : 'received'}`}>
                             
